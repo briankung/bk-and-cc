@@ -109,7 +109,7 @@ export default class CameraScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#000'
   },
   flipButton: {
     flex: 0.3,
@@ -122,13 +122,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   flipText: {
     color: 'white',
-    fontSize: 15,
+    fontSize: 15
   },
   picButton: {
-    backgroundColor: 'darkseagreen',
-  },
+    backgroundColor: 'darkseagreen'
+  }
 });
