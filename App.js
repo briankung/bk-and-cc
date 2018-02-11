@@ -1,6 +1,6 @@
 import { Constants, Camera, FileSystem, Permissions } from 'expo';
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Slider, Vibration } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Slider, Vibration, CameraRoll } from 'react-native';
 import isIPhoneX from 'react-native-is-iphonex';
 
 export default class CameraScreen extends React.Component {
@@ -21,13 +21,8 @@ export default class CameraScreen extends React.Component {
   async componentWillMount() {
     const { status: cameraPermissions } = await Permissions.askAsync(Permissions.CAMERA);
     const { status: audioPermissions } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+    const { status: rollPermissions } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     this.setState({ permissionsGranted: cameraPermissions === 'granted' && audioPermissions === 'granted' });
-  }
-
-  componentDidMount() {
-    FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photos').catch(e => {
-      console.log(e, 'Directory exists');
-    });
   }
 
   toggleFacing() {
@@ -38,16 +33,10 @@ export default class CameraScreen extends React.Component {
 
   takePicture = async function() {
     if (this.camera) {
+      Vibration.vibrate();
+
       this.camera.takePictureAsync().then(data => {
-        FileSystem.moveAsync({
-          from: data.uri,
-          to: `${FileSystem.documentDirectory}photos/Photo_${this.state.photoId}.jpg`,
-        }).then(() => {
-          this.setState({
-            photoId: this.state.photoId + 1,
-          });
-          Vibration.vibrate();
-        });
+        CameraRoll.saveToCameraRoll(data.uri, 'photo')
       });
     }
   };
