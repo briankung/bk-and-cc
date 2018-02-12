@@ -18,26 +18,33 @@ export default class CameraScreen extends React.Component {
     permissionsGranted: false,
   };
 
-  async componentWillMount() {
+  async componentWillMount () {
     const { status: cameraPermissions } = await Permissions.askAsync(Permissions.CAMERA);
     const { status: audioPermissions } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
     const { status: rollPermissions } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    this.setState({ permissionsGranted: cameraPermissions === 'granted' && audioPermissions === 'granted' });
+
+    const permissions = [cameraPermissions, audioPermissions, rollPermissions]
+
+    const permissionsGranted = permissions.reduce((permissionsGranted, permission) => {
+      return permissionsGranted && permission === 'granted'
+    }, true)
+
+    this.setState({ permissionsGranted });
   }
 
-  toggleFacing() {
+  toggleFacing () {
     this.setState({
       type: this.state.type === 'back' ? 'front' : 'back',
     });
   }
 
-  takePicture = async function() {
+  takePicture = async () => {
     if (this.camera) {
       Vibration.vibrate();
 
-      this.camera.takePictureAsync().then(data => {
-        CameraRoll.saveToCameraRoll(data.uri, 'photo')
-      });
+      const data = await this.camera.takePictureAsync();
+
+      CameraRoll.saveToCameraRoll(data.uri);
     }
   };
 
