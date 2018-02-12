@@ -1,6 +1,6 @@
 import { Constants, Camera, FileSystem, Permissions } from 'expo';
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Slider, Vibration, CameraRoll } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Vibration, CameraRoll } from 'react-native';
 import isIPhoneX from 'react-native-is-iphonex';
 
 export default class CameraScreen extends React.Component {
