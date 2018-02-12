@@ -1,7 +1,7 @@
-import { Constants, Camera, FileSystem, Permissions } from 'expo';
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Vibration, CameraRoll } from 'react-native';
-import isIPhoneX from 'react-native-is-iphonex';
+import { Constants, Camera, FileSystem, Permissions } from 'expo'
+import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Vibration, CameraRoll } from 'react-native'
+import isIPhoneX from 'react-native-is-iphonex'
 
 export default class CameraScreen extends React.Component {
   state = {
@@ -16,35 +16,35 @@ export default class CameraScreen extends React.Component {
     photoId: 1,
     photos: [],
     permissionsGranted: false,
-  };
+  }
 
   async componentWillMount () {
-    await this.requestPermissions();
+    await this.requestPermissions()
   }
 
   async requestPermissions () {
-    const { status: cameraPermissions } = await Permissions.askAsync(Permissions.CAMERA);
-    const { status: audioPermissions } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-    const { status: rollPermissions } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { status: cameraPermissions } = await Permissions.askAsync(Permissions.CAMERA)
+    const { status: audioPermissions } = await Permissions.askAsync(Permissions.AUDIO_RECORDING)
+    const { status: rollPermissions } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
 
-    this.setState({ permissionsGranted: cameraPermissions == 'granted' });
+    this.setState({ permissionsGranted: cameraPermissions == 'granted' })
   }
 
   toggleFacing () {
     this.setState({
       type: this.state.type === 'back' ? 'front' : 'back',
-    });
+    })
   }
 
   takePicture = async () => {
     if (this.camera) {
-      Vibration.vibrate();
+      Vibration.vibrate()
 
-      const data = await this.camera.takePictureAsync();
+      const data = await this.camera.takePictureAsync()
 
-      CameraRoll.saveToCameraRoll(data.uri);
+      CameraRoll.saveToCameraRoll(data.uri)
     }
-  };
+  }
 
   renderNoPermissions() {
     return (
@@ -53,7 +53,7 @@ export default class CameraScreen extends React.Component {
           Camera permissions not granted - cannot open camera preview.
         </Text>
       </View>
-    );
+    )
   }
 
   renderCamera() {
@@ -89,14 +89,14 @@ export default class CameraScreen extends React.Component {
           </TouchableOpacity>
         </View>
       </Camera>
-    );
+    )
   }
 
   render() {
     const cameraScreenContent = this.state.permissionsGranted
       ? this.renderCamera()
-      : this.renderNoPermissions();
-    return <View style={styles.container}>{cameraScreenContent}</View>;
+      : this.renderNoPermissions()
+    return <View style={styles.container}>{cameraScreenContent}</View>
   }
 }
 
@@ -125,4 +125,4 @@ const styles = StyleSheet.create({
   picButton: {
     backgroundColor: 'darkseagreen'
   }
-});
+})
