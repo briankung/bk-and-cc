@@ -19,17 +19,15 @@ export default class CameraScreen extends React.Component {
   };
 
   async componentWillMount () {
+    await this.requestPermissions();
+  }
+
+  async requestPermissions () {
     const { status: cameraPermissions } = await Permissions.askAsync(Permissions.CAMERA);
     const { status: audioPermissions } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
     const { status: rollPermissions } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-    const permissions = [cameraPermissions, audioPermissions, rollPermissions]
-
-    const permissionsGranted = permissions.reduce((permissionsGranted, permission) => {
-      return permissionsGranted && permission === 'granted'
-    }, true)
-
-    this.setState({ permissionsGranted });
+    this.setState({ permissionsGranted: cameraPermissions == 'granted' });
   }
 
   toggleFacing () {
