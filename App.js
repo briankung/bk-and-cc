@@ -10,6 +10,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Vibration, CameraRoll } from 
 import isIPhoneX from 'react-native-is-iphonex'
 import firebase from 'firebase'
 
+const apiUrl = 'https://us-central1-brian-and-cici.cloudfunctions.net/api/picture'
+
 export default class CameraScreen extends React.Component {
   state = {
     flash: 'off',
@@ -63,28 +65,31 @@ export default class CameraScreen extends React.Component {
 
       const picture = await this.camera.takePictureAsync({ quality: 1, base64: true, exif: true })
 
-      // CameraRoll.saveToCameraRoll(data.uri)
+      CameraRoll.saveToCameraRoll(picture.uri)
 
-      const apiUrl = 'https://us-central1-brian-and-cici.cloudfunctions.net/api/picture'
-      const { DateTime, SubSecTime } = picture.exif
-      const name = `${DateTime.replace(/\D/g, '_')}_${SubSecTime}`
-      const body = new FormData()
-
-      body.append("picture", {
-        uri: picture.uri,
-        name,
-        type: "image/jpg"
-      })
-
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        body,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data"
-        }
-      })
+      await this.uploadPicture(picture)
     }
+  }
+
+  async uploadPicture (picture) {
+    const { DateTime, SubSecTime } = picture.exif
+    const name = `${DateTime.replace(/\D/g, '_')}_${SubSecTime}`
+    const body = new FormData()
+
+    body.append("picture", {
+      uri: picture.uri,
+      name,
+      type: "image/jpg"
+    })
+
+    const res = await fetch(apiUrl, {
+      method: "POST",
+      body,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data"
+      }
+    })
   }
 
   renderNoPermissions() {
