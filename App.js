@@ -1,4 +1,10 @@
-import { Constants, Camera, FileSystem, Permissions } from 'expo'
+import {
+  Constants,
+  Camera,
+  FileSystem,
+  Permissions
+} from 'expo'
+
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Vibration, CameraRoll } from 'react-native'
 import isIPhoneX from 'react-native-is-iphonex'
@@ -51,13 +57,27 @@ export default class CameraScreen extends React.Component {
     })
   }
 
-  takePicture = async () => {
+  async takePicture () {
     if (this.camera) {
       Vibration.vibrate()
 
-      const data = await this.camera.takePictureAsync()
+      const data = await this.camera.takePictureAsync({ quality: 1, base64: true, exif: true })
 
-      CameraRoll.saveToCameraRoll(data.uri)
+      console.log(data)
+
+      // CameraRoll.saveToCameraRoll(data.uri)
+
+      let apiUrl = 'https://us-central1-brian-and-cici.cloudfunctions.net/convertPhoto'
+
+      let options = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+
+      return fetch(apiUrl, options)
     }
   }
 
