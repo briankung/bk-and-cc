@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "camerja",
-    "description": "An example of using the Expo.Camera API. http://github.com/expo/camerja",
-    "slug": "camerja",
+    "name": "BK & CC",
+    "description": "A small app to consolidate photos for my wedding",
+    "slug": "bk-and-cc",
     "privacy": "unlisted",
     "sdkVersion": "25.0.0",
     "version": "1.0.0",
