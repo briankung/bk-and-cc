@@ -2,6 +2,7 @@ import { Constants, Camera, FileSystem, Permissions } from 'expo'
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Vibration, CameraRoll } from 'react-native'
 import isIPhoneX from 'react-native-is-iphonex'
+import firebase from 'firebase'
 
 export default class CameraScreen extends React.Component {
   state = {
@@ -20,6 +21,7 @@ export default class CameraScreen extends React.Component {
 
   async componentWillMount () {
     await this.requestPermissions()
+    await this.initializeCloudStorage()
   }
 
   async requestPermissions () {
@@ -28,6 +30,19 @@ export default class CameraScreen extends React.Component {
     const { status: rollPermissions } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
 
     this.setState({ permissionsGranted: cameraPermissions == 'granted' })
+  }
+
+  async initializeCloudStorage () {
+    firebase.initializeApp({
+      apiKey: "AIzaSyC-hBpFUahDINGzgRyHU3Q4MOoVo_WXcEE",
+      authDomain: "brian-and-cici.firebaseapp.com",
+      databaseURL: "https://brian-and-cici.firebaseio.com",
+      projectId: "brian-and-cici",
+      storageBucket: "brian-and-cici.appspot.com",
+      messagingSenderId: "181334179101"
+    })
+
+    firebase.auth().signInAnonymously()
   }
 
   toggleFacing () {
