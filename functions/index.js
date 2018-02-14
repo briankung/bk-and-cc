@@ -1,36 +1,46 @@
-const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-const Storage = require('@google-cloud/storage')()
-const firebaseBucket = functions.config().firebase.storageBucket
-const stream = require('stream')
+const functions = require('firebase-functions')
+const Cors = require('cors')
+const express = require('express')
+const fileUpload = require('./cloud-function-file-upload')
+
+const api = express().use(Cors({ origin: true }))
+fileUpload('/picture', api)
 
 admin.initializeApp(functions.config().firebase)
 
-exports.addMessage = functions.https.onRequest((req, res) => {
-  const original = req.query.text
-  admin.database().ref('/messages').push({original: original}).then(snapshot => {
-    res.redirect(303, snapshot.ref)
-  })
+api.post('/picture', function (req, response, next) {
+  uploadImageToStorage(req.files.file[0])
+    .then(metadata => {
+      response.status(200).json(metadata[0])
+      next()
+    })
+    .catch(error => {
+      response.status(500).json({ error })
+      next()
+    })
 })
 
-exports.convertPhoto = functions.https.onRequest((request) => {
-  const encodedImage = request.body.base64
+exports.api = functions.https.onRequest(api)
 
-  let fileKey = request.body.uri.split('/')
-  fileKey = fileKey[fileKey.length - 1]
-  const firebaseFile = Storage.bucket(firebaseBucket).file(fileKey)
-
-  const bufferStream = new stream.PassThrough()
-
-  bufferStream.end(global.Buffer(encodedImage, 'base64'))
-  bufferStream.pipe(firebaseFile.createWriteStream({
-    metadata: {
-      contentType: 'image/jpeg',
+const uploadImageToStorage = file => {
+  const storage = admin.storage()
+  return new Promise((resolve, reject) => {
+    const fileUpload = storage.bucket().file(file.originalname)
+    const blobStream = fileUpload.createWriteStream({
       metadata: {
-        custom: 'metadata'
+        contentType: 'image/jpg'
       }
-    },
-    public: true,
-    validation: 'md5'
-  }))
-})
+    })
+
+    blobStream.on('error', error => reject(error))
+
+    blobStream.on('finish', () => {
+      fileUpload.getMetadata()
+        .then(metadata => resolve(metadata))
+        .catch(error => reject(error))
+    })
+
+    blobStream.end(file.buffer)
+  })
+}

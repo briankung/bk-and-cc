@@ -22,7 +22,7 @@ export default class CameraScreen extends React.Component {
     ratios: [],
     photoId: 1,
     photos: [],
-    permissionsGranted: false,
+    permissionsGranted: false
   }
 
   async componentWillMount () {
@@ -61,23 +61,29 @@ export default class CameraScreen extends React.Component {
     if (this.camera) {
       Vibration.vibrate()
 
-      const data = await this.camera.takePictureAsync({ quality: 1, base64: true, exif: true })
-
-      console.log(data)
+      const picture = await this.camera.takePictureAsync({ quality: 1, base64: true, exif: true })
 
       // CameraRoll.saveToCameraRoll(data.uri)
 
-      let apiUrl = 'https://us-central1-brian-and-cici.cloudfunctions.net/convertPhoto'
+      const apiUrl = 'https://us-central1-brian-and-cici.cloudfunctions.net/api/picture'
+      const { DateTime, SubSecTime } = picture.exif
+      const name = `${DateTime.replace(/\D/g, '_')}_${SubSecTime}`
+      const body = new FormData()
 
-      let options = {
-        method: 'POST',
-        body: JSON.stringify(data),
+      body.append("picture", {
+        uri: picture.uri,
+        name,
+        type: "image/jpg"
+      })
+
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        body,
         headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-
-      return fetch(apiUrl, options)
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data"
+        }
+      })
     }
   }
 
