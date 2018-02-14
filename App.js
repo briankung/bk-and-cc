@@ -72,7 +72,7 @@ export default class CameraScreen extends React.Component {
   }
 
   async uploadPicture (picture) {
-    const { DateTime, SubSecTime } = picture.exif
+    const { DateTimeOriginal, SubSecTimeOriginal } = picture.exif
     const name = `${DateTime.replace(/\D/g, '_')}_${SubSecTime}`
     const body = new FormData()
 
