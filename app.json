@@ -3,7 +3,7 @@
     "name": "camerja",
     "description": "An example of using the Expo.Camera API. http://github.com/expo/camerja",
     "slug": "camerja",
-    "privacy": "public",
+    "privacy": "unlisted",
     "sdkVersion": "25.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
