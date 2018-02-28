@@ -34,7 +34,6 @@ export default class CameraScreen extends React.Component {
 
   async requestPermissions () {
     const { status: cameraPermissions } = await Permissions.askAsync(Permissions.CAMERA)
-    const { status: audioPermissions } = await Permissions.askAsync(Permissions.AUDIO_RECORDING)
     const { status: rollPermissions } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
 
     this.setState({ permissionsGranted: cameraPermissions == 'granted' })
