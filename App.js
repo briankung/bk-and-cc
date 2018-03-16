@@ -10,7 +10,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Vibration, CameraRoll } from 
 import isIPhoneX from 'react-native-is-iphonex'
 import firebase from 'firebase'
 
-const apiUrl = 'https://us-central1-brian-and-cici.cloudfunctions.net/api/picture'
+const apiUrl = 'API_URL'
 
 export default class CameraScreen extends React.Component {
   state = {
@@ -41,12 +41,12 @@ export default class CameraScreen extends React.Component {
 
   async initializeCloudStorage () {
     firebase.initializeApp({
-      apiKey: "AIzaSyC-hBpFUahDINGzgRyHU3Q4MOoVo_WXcEE",
-      authDomain: "brian-and-cici.firebaseapp.com",
-      databaseURL: "https://brian-and-cici.firebaseio.com",
-      projectId: "brian-and-cici",
-      storageBucket: "brian-and-cici.appspot.com",
-      messagingSenderId: "181334179101"
+      apiKey: "API_KEY",
+      authDomain: "AUTH_DOMAIN",
+      databaseURL: "DATABASE_URL",
+      projectId: "PROJECT_ID",
+      storageBucket: "STORAGE_BUCKET",
+      messagingSenderId: "WAT"
     })
 
     firebase.auth().signInAnonymously()
